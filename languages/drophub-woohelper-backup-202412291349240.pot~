@@ -1,0 +1,90 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: DropHub WooHelper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-29 12:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.14; wp-6.7.1\n"
+"X-Domain: drophub-woohelper"
+
+#: includes/class-shipping-calculator.php:76
+msgid "Class ID:"
+msgstr ""
+
+#. Name of the plugin
+msgid "DropHub WooHelper"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Enhances WooCommerce with return policy display, location validation, and "
+"delivery time calculations."
+msgstr ""
+
+#: includes/class-shipping-calculator.php:49
+msgid "Enter estimated shipping time range in days"
+msgstr ""
+
+#: includes/class-location-validator.php:79
+msgid "Enter excluded locations (one per line)"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:164
+msgid "Estimated shipping: %d days"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:173
+msgid "Estimated shipping: %d-%d days"
+msgstr ""
+
+#: includes/class-location-validator.php:65
+msgid "Excluded Locations"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://your-website.com"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://your-website.com/drophub-woohelper"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:64
+msgid "Maximum Days:"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:52
+msgid "Minimum Days:"
+msgstr ""
+
+#. Author of the plugin
+msgid "Mohamad Gandomi"
+msgstr ""
+
+#: includes/class-return-policy.php:23 includes/class-return-policy.php:73
+msgid "Return Policy"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:24
+msgid "Shipping Time Range"
+msgstr ""
+
+#: includes/class-location-validator.php:131
+#, php-format
+msgid "Sorry, %s cannot be shipped to %s"
+msgstr ""
+
+#: drophub-woohelper.php:41
+msgid ""
+"WooCommerce is not active. Please activate WooCommerce to use the DropHub "
+"WooHelper plugin."
+msgstr ""
