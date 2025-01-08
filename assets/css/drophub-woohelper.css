@@ -87,3 +87,125 @@
         padding-right: 10px !important;
     }
 }
+
+.shipping-cost-info {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f7f7f7;
+    border-radius: 4px;
+}
+
+.shipping-cost-info .shipping-option {
+    margin: 10px 0;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.shipping-cost-info .shipping-option:first-child {
+    margin-top: 0;
+}
+
+.shipping-cost-info .shipping-method {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.shipping-cost-info .shipping-zone {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    padding: 3px 8px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.shipping-cost-info .delivery-time {
+    display: inline-block;
+    margin: 0 0 10px 0;
+    padding: 3px 8px;
+    background: #e7f5e7;
+    border-radius: 3px;
+    font-size: 0.9em;
+    color: #28a745;
+}
+
+.shipping-cost-info .base-rate,
+.shipping-cost-info .extra-items {
+    display: block;
+    margin: 5px 0;
+    font-size: 0.95em;
+    color: #666;
+}
+
+.shipping-cost-info .option-total {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+    font-weight: 600;
+    color: #333;
+}
+
+.shipping-cost-info .total-shipping {
+    display: block;
+    margin-top: 15px;
+    padding: 12px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #333;
+    text-align: right;
+    font-size: 1.1em;
+}
+
+.shipping-group-header {
+    padding: 15px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.shipping-group-header strong {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.shipping-cost-info .method-products {
+    margin: 10px 0;
+    padding: 10px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 3px;
+}
+
+.shipping-cost-info .product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.shipping-cost-info .product-item:last-child {
+    border-bottom: none;
+}
+
+.shipping-cost-info .product-name {
+    flex: 1;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.shipping-cost-info .product-quantity {
+    margin-left: 10px;
+    font-size: 0.9em;
+    color: #999;
+    white-space: nowrap;
+}

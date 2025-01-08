@@ -34,6 +34,125 @@ do_action('woocommerce_before_cart'); ?>
                         <div class="shipping-group">
                             <div class="shipping-group-header">
                                 <strong><?php echo esc_html($group['shipping_class']); ?></strong>
+                                <?php
+                                if ($group['shipping_class'] !== __('Standard Shipping', 'drophub-woohelper')) {
+                                    $shipping_methods = array();
+                                    $customer_state = WC()->customer ? WC()->customer->get_shipping_state() : '';
+                                    $fallback_methods = array();
+
+                                    // Group items by shipping method and zone
+                                    foreach ($group['items'] as $cart_item) {
+                                        $product_id = $cart_item['product_id'];
+                                        $shipping_data = get_post_meta($product_id, '_drophub_prepaid_shippings', true);
+                                        $shipping_data = maybe_unserialize($shipping_data);
+
+                                        if (!empty($shipping_data)) {
+                                            $found_shipping = false;
+                                            foreach ($shipping_data as $data) {
+                                                if ($data['class'] === $group['shipping_class']) {
+                                                    $zone_parts = explode(':', $data['zone_code']);
+                                                    
+                                                    // Check for state-specific shipping
+                                                    if (count($zone_parts) === 2 && $zone_parts[0] === 'IR' && $zone_parts[1] === $customer_state) {
+                                                        $method_key = $data['method'];
+                                                        if (!isset($shipping_methods[$method_key])) {
+                                                            $shipping_methods[$method_key] = array(
+                                                                'method' => $data['method'],
+                                                                'zone' => $zone_parts[1],
+                                                                'rate' => floatval($data['rate']),
+                                                                'extra_rate' => floatval($data['extra_item_rate']),
+                                                                'delivery_time' => sprintf(
+                                                                    __('%d-%d days', 'drophub-woohelper'),
+                                                                    absint($data['range']['min']),
+                                                                    absint($data['range']['max'])
+                                                                ),
+                                                                'total_quantity' => 0,
+                                                                'items' => array()
+                                                            );
+                                                        }
+                                                        $shipping_methods[$method_key]['total_quantity'] += $cart_item['quantity'];
+                                                        $shipping_methods[$method_key]['items'][] = $cart_item;
+                                                        $found_shipping = true;
+                                                        break;
+                                                    }
+                                                    // Store IR-only options as fallback
+                                                    elseif ($data['zone_code'] === 'IR' && !$found_shipping) {
+                                                        $method_key = $data['method'];
+                                                        if (!isset($fallback_methods[$method_key])) {
+                                                            $fallback_methods[$method_key] = array(
+                                                                'method' => $data['method'],
+                                                                'zone' => 'IR',
+                                                                'rate' => floatval($data['rate']),
+                                                                'extra_rate' => floatval($data['extra_item_rate']),
+                                                                'delivery_time' => sprintf(
+                                                                    __('%d-%d days', 'drophub-woohelper'),
+                                                                    absint($data['range']['min']),
+                                                                    absint($data['range']['max'])
+                                                                ),
+                                                                'total_quantity' => 0,
+                                                                'items' => array()
+                                                            );
+                                                        }
+                                                        $fallback_methods[$method_key]['total_quantity'] += $cart_item['quantity'];
+                                                        $fallback_methods[$method_key]['items'][] = $cart_item;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // If no state-specific methods found, use fallback methods
+                                    if (empty($shipping_methods) && !empty($fallback_methods)) {
+                                        $shipping_methods = $fallback_methods;
+                                    }
+
+                                    if (!empty($shipping_methods)) {
+                                        echo '<div class="shipping-cost-info">';
+                                        $total_shipping = 0;
+
+                                        foreach ($shipping_methods as $method) {
+                                            $base_rate = $method['rate'];
+                                            $extra_rate = $method['extra_rate'];
+                                            $total_quantity = $method['total_quantity'];
+
+                                            // Calculate shipping cost for this method
+                                            $method_cost = $base_rate;
+                                            if ($total_quantity > 1 && $extra_rate > 0) {
+                                                $method_cost += ($total_quantity - 1) * $extra_rate;
+                                            }
+                                            $total_shipping += $method_cost;
+
+                                            echo '<div class="shipping-option">';
+                                            echo '<span class="shipping-method">' . esc_html($method['method']) . '</span>';
+                                            if ($method['zone'] !== 'IR') {
+                                                echo '<span class="shipping-zone">' . sprintf(__('Zone: %s', 'drophub-woohelper'), esc_html($method['zone'])) . '</span>';
+                                            }
+                                            echo '<span class="delivery-time">' . sprintf(__('Delivery Time: %s', 'drophub-woohelper'), esc_html($method['delivery_time'])) . '</span>';
+                                            
+                                            // List products using this shipping method
+                                            echo '<div class="method-products">';
+                                            foreach ($method['items'] as $item) {
+                                                $_product = $item['data'];
+                                                echo '<div class="product-item">';
+                                                echo '<span class="product-name">' . esc_html($_product->get_name()) . '</span>';
+                                                echo '<span class="product-quantity">× ' . esc_html($item['quantity']) . '</span>';
+                                                echo '</div>';
+                                            }
+                                            echo '</div>';
+                                            
+                                            echo '<span class="base-rate">' . sprintf(__('Base Rate: %s', 'drophub-woohelper'), wc_price($base_rate)) . '</span>';
+                                            if ($total_quantity > 1 && $extra_rate > 0) {
+                                                echo '<span class="extra-items">' . sprintf(__('Extra Items (%d): %s', 'drophub-woohelper'), $total_quantity - 1, wc_price(($total_quantity - 1) * $extra_rate)) . '</span>';
+                                            }
+                                            echo '<span class="option-total">' . sprintf(__('Method Total: %s', 'drophub-woohelper'), wc_price($method_cost)) . '</span>';
+                                            echo '</div>';
+                                        }
+
+                                        echo '<span class="total-shipping">' . sprintf(__('Total Group Shipping: %s', 'drophub-woohelper'), wc_price($total_shipping)) . '</span>';
+                                        echo '</div>';
+                                    }
+                                }
+                                ?>
                             </div>
                             <table class="shop_table shop_table_responsive">
                                 <tbody>
