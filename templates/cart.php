@@ -38,16 +38,16 @@ do_action('woocommerce_before_cart'); ?>
                                 if ($group['shipping_class'] !== __('Standard Shipping', 'drophub-woohelper')) {
                                     $shipping_methods = array();
                                     $customer_state = WC()->customer ? WC()->customer->get_shipping_state() : '';
-                                    $fallback_methods = array();
+                                    $processed_items = array(); // Track which items have been processed
 
-                                    // Group items by shipping method and zone
-                                    foreach ($group['items'] as $cart_item) {
+                                    // First pass: Try to assign items to state-specific shipping methods
+                                    foreach ($group['items'] as $cart_item_key => $cart_item) {
                                         $product_id = $cart_item['product_id'];
                                         $shipping_data = get_post_meta($product_id, '_drophub_prepaid_shippings', true);
                                         $shipping_data = maybe_unserialize($shipping_data);
 
                                         if (!empty($shipping_data)) {
-                                            $found_shipping = false;
+                                            $found_state_shipping = false;
                                             foreach ($shipping_data as $data) {
                                                 if ($data['class'] === $group['shipping_class']) {
                                                     $zone_parts = explode(':', $data['zone_code']);
@@ -72,14 +72,28 @@ do_action('woocommerce_before_cart'); ?>
                                                         }
                                                         $shipping_methods[$method_key]['total_quantity'] += $cart_item['quantity'];
                                                         $shipping_methods[$method_key]['items'][] = $cart_item;
-                                                        $found_shipping = true;
+                                                        $processed_items[$cart_item_key] = true;
+                                                        $found_state_shipping = true;
                                                         break;
                                                     }
-                                                    // Store IR-only options as fallback
-                                                    elseif ($data['zone_code'] === 'IR' && !$found_shipping) {
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Second pass: Process remaining items with IR shipping
+                                    foreach ($group['items'] as $cart_item_key => $cart_item) {
+                                        if (!isset($processed_items[$cart_item_key])) {
+                                            $product_id = $cart_item['product_id'];
+                                            $shipping_data = get_post_meta($product_id, '_drophub_prepaid_shippings', true);
+                                            $shipping_data = maybe_unserialize($shipping_data);
+
+                                            if (!empty($shipping_data)) {
+                                                foreach ($shipping_data as $data) {
+                                                    if ($data['class'] === $group['shipping_class'] && $data['zone_code'] === 'IR') {
                                                         $method_key = $data['method'];
-                                                        if (!isset($fallback_methods[$method_key])) {
-                                                            $fallback_methods[$method_key] = array(
+                                                        if (!isset($shipping_methods[$method_key])) {
+                                                            $shipping_methods[$method_key] = array(
                                                                 'method' => $data['method'],
                                                                 'zone' => 'IR',
                                                                 'rate' => floatval($data['rate']),
@@ -93,17 +107,13 @@ do_action('woocommerce_before_cart'); ?>
                                                                 'items' => array()
                                                             );
                                                         }
-                                                        $fallback_methods[$method_key]['total_quantity'] += $cart_item['quantity'];
-                                                        $fallback_methods[$method_key]['items'][] = $cart_item;
+                                                        $shipping_methods[$method_key]['total_quantity'] += $cart_item['quantity'];
+                                                        $shipping_methods[$method_key]['items'][] = $cart_item;
+                                                        break;
                                                     }
                                                 }
                                             }
                                         }
-                                    }
-
-                                    // If no state-specific methods found, use fallback methods
-                                    if (empty($shipping_methods) && !empty($fallback_methods)) {
-                                        $shipping_methods = $fallback_methods;
                                     }
 
                                     if (!empty($shipping_methods)) {
