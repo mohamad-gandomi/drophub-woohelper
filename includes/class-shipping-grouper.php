@@ -24,9 +24,7 @@ class Shipping_Grouper {
     public function override_checkout_template($template, $template_name, $template_path) {
         if ($template_name === 'checkout/review-order.php') {
             $custom_template = plugin_dir_path(dirname(__FILE__)) . 'templates/checkout-review-order.php';
-            if (file_exists($custom_template)) {
-                return $custom_template;
-            }
+            return file_exists($custom_template) ? $custom_template : $template;
         }
         return $template;
     }
@@ -34,6 +32,7 @@ class Shipping_Grouper {
     public function group_cart_items() {
         $cart = WC()->cart->get_cart();
         $grouped_items = array();
+        $customer_state = WC()->customer ? WC()->customer->get_shipping_state() : '';
         
         foreach ($cart as $cart_item_key => $cart_item) {
             $product_id = $cart_item['product_id'];
@@ -42,27 +41,78 @@ class Shipping_Grouper {
             if (!empty($shipping_data)) {
                 $shipping_data = maybe_unserialize($shipping_data);
                 if (!empty($shipping_data)) {
-                    $first_shipping = reset($shipping_data);
-                    $group_key = $first_shipping['class'];
+                    $assigned = false;
                     
-                    if (!isset($grouped_items[$group_key])) {
-                        $grouped_items[$group_key] = array(
-                            'shipping_class' => $group_key,
-                            'items' => array()
-                        );
+                    // First try to find state-specific shipping
+                    foreach ($shipping_data as $data) {
+                        $zone_parts = explode(':', $data['zone_code']);
+                        if (count($zone_parts) === 2 && $zone_parts[0] === 'IR' && $zone_parts[1] === $customer_state) {
+                            // Include prepaid status in the group key
+                            $group_key = $data['class'] . '_' . $data['method'] . '_' . ($data['prepaid'] ? 'prepaid' : 'not_prepaid');
+                            
+                            if (!isset($grouped_items[$group_key])) {
+                                $grouped_items[$group_key] = array(
+                                    'shipping_class' => $data['class'],
+                                    'shipping_method' => $data['method'],
+                                    'zone' => $zone_parts[1],
+                                    'rate' => $data['prepaid'] ? floatval($data['rate']) : 0,
+                                    'extra_rate' => $data['prepaid'] ? floatval($data['extra_item_rate']) : 0,
+                                    'prepaid' => $data['prepaid'],
+                                    'delivery_time' => array(
+                                        'min' => absint($data['range']['min']),
+                                        'max' => absint($data['range']['max'])
+                                    ),
+                                    'items' => array()
+                                );
+                            }
+                            
+                            $grouped_items[$group_key]['items'][$cart_item_key] = $cart_item;
+                            $assigned = true;
+                            break;
+                        }
                     }
                     
-                    $grouped_items[$group_key]['items'][$cart_item_key] = $cart_item;
+                    // If no state-specific shipping found, use general IR shipping
+                    if (!$assigned) {
+                        foreach ($shipping_data as $data) {
+                            if ($data['zone_code'] === 'IR') {
+                                // Include prepaid status in the group key
+                                $group_key = $data['class'] . '_' . $data['method'] . '_' . ($data['prepaid'] ? 'prepaid' : 'not_prepaid');
+                                
+                                if (!isset($grouped_items[$group_key])) {
+                                    $grouped_items[$group_key] = array(
+                                        'shipping_class' => $data['class'],
+                                        'shipping_method' => $data['method'],
+                                        'zone' => 'IR',
+                                        'rate' => $data['prepaid'] ? floatval($data['rate']) : 0,
+                                        'extra_rate' => $data['prepaid'] ? floatval($data['extra_item_rate']) : 0,
+                                        'prepaid' => $data['prepaid'],
+                                        'delivery_time' => array(
+                                            'min' => absint($data['range']['min']),
+                                            'max' => absint($data['range']['max'])
+                                        ),
+                                        'items' => array()
+                                    );
+                                }
+                                
+                                $grouped_items[$group_key]['items'][$cart_item_key] = $cart_item;
+                                break;
+                            }
+                        }
+                    }
                 }
             } else {
-                // Items without shipping data go to "ungrouped"
-                if (!isset($grouped_items['ungrouped'])) {
-                    $grouped_items['ungrouped'] = array(
+                // Items without shipping data go to "standard shipping" (always prepaid)
+                $group_key = 'standard_shipping_prepaid';
+                if (!isset($grouped_items[$group_key])) {
+                    $grouped_items[$group_key] = array(
                         'shipping_class' => __('Standard Shipping', 'drophub-woohelper'),
+                        'shipping_method' => __('Standard Shipping', 'drophub-woohelper'),
+                        'prepaid' => true,
                         'items' => array()
                     );
                 }
-                $grouped_items['ungrouped']['items'][$cart_item_key] = $cart_item;
+                $grouped_items[$group_key]['items'][$cart_item_key] = $cart_item;
             }
         }
         

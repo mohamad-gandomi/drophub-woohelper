@@ -12,34 +12,45 @@ $grouped_items = $shipping_grouper->group_cart_items();
     <?php foreach ($grouped_items as $group_key => $group) : ?>
         <div class="checkout-shipping-group">
             <div class="shipping-group-header">
-                <strong><?php echo esc_html($group['shipping_class']); ?></strong>
-                <?php
-                // Get shipping information for this group
-                $shipping_data = array();
-                foreach ($group['items'] as $cart_item) {
-                    $product_id = $cart_item['product_id'];
-                    $product_shipping = get_post_meta($product_id, '_drophub_shippings', true);
-                    if (!empty($product_shipping)) {
-                        $shipping_data = maybe_unserialize($product_shipping);
-                        break; // We only need one product's shipping data as they're in the same group
-                    }
-                }
-                if (!empty($shipping_data)) {
-                    $first_shipping = reset($shipping_data);
-                    ?>
-                    <div class="shipping-info">
-                        <?php if (!empty($first_shipping['delivery_time'])) : ?>
+                <?php if (isset($group['shipping_method']) && $group['shipping_method'] !== __('Standard Shipping', 'drophub-woohelper')): ?>
+                    <div class="shipping-details">
+                        <div class="shipping-method-info">
+                            <span class="method-name"><?php echo esc_html($group['shipping_method']); ?></span>
+                        </div>
+                        
+                        <?php if (isset($group['delivery_time'])): ?>
                             <span class="delivery-time">
-                                <?php echo esc_html(sprintf(__('Delivery Time: %s', 'drophub-woohelper'), $first_shipping['delivery_time'])); ?>
+                                <?php echo sprintf(
+                                    __('Delivery Time: %d-%d days', 'drophub-woohelper'),
+                                    $group['delivery_time']['min'],
+                                    $group['delivery_time']['max']
+                                ); ?>
                             </span>
                         <?php endif; ?>
-                        <?php if (!empty($first_shipping['zone'])) : ?>
-                            <span class="shipping-zone">
-                                <?php echo esc_html(sprintf(__('Shipping Zone: %s', 'drophub-woohelper'), $first_shipping['zone'])); ?>
-                            </span>
+
+                        <span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
+                            <?php 
+                            if (!$group['prepaid']) {
+                                echo '<strong>' . esc_html__('Pay Upon Delivery', 'drophub-woohelper') . '</strong>';
+                            }
+                            ?>
+                        </span>
+
+                        <?php if ($group['prepaid'] && isset($group['rate'])): ?>
+                            <div class="shipping-rates">
+                                <?php
+                                $total_quantity = array_sum(array_column($group['items'], 'quantity'));
+                                if ($total_quantity > 1 && $group['extra_rate'] > 0):
+                                    $total_cost = $group['rate'] + (($total_quantity - 1) * $group['extra_rate']);
+                                ?>
+                                    <span class="total-cost">
+                                        <?php echo sprintf(__('Total Shipping: %s', 'drophub-woohelper'), wc_price($total_cost)); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
-                <?php } ?>
+                <?php endif; ?>
             </div>
             
             <table class="shop_table group-products">

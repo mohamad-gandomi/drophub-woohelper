@@ -336,3 +336,18 @@
     background: #fff3cd;
     color: #856404;
 }
+
+.shipping-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.prepaid-status.not-prepaid {
+    color: #e2401c;
+}
+
+.shipping-rates {
+    margin-left: auto;
+}

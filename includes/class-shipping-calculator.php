@@ -7,13 +7,13 @@ if (!defined('ABSPATH')) {
 
 class Shipping_Calculator {
     private $meta_key = '_drophub_shippings';
-    private $display;
+    //private $display;
     private $grouper;
     private $admin;
 
     public function __construct() {
         // Initialize components
-        $this->display = new Shipping_Display();
+        //$this->display = new Shipping_Display();
         $this->grouper = new Shipping_Grouper();
         $this->admin = new Shipping_Admin();
         
@@ -40,7 +40,10 @@ class Shipping_Calculator {
         $customer_state = WC()->customer ? WC()->customer->get_shipping_state() : '';
 
         foreach ($grouped_items as $group) {
-            if (empty($group['items']) || $group['shipping_class'] === __('Standard Shipping', 'drophub-woohelper')) {
+            // Skip empty groups, standard shipping, or non-prepaid groups
+            if (empty($group['items']) || 
+                $group['shipping_class'] === __('Standard Shipping', 'drophub-woohelper') ||
+                (isset($group['prepaid']) && !$group['prepaid'])) {
                 continue;
             }
 
@@ -55,6 +58,11 @@ class Shipping_Calculator {
 
                 if (!empty($shipping_data)) {
                     foreach ($shipping_data as $data) {
+                        // Skip non-prepaid shipping methods
+                        if (!$data['prepaid']) {
+                            continue;
+                        }
+
                         if ($data['class'] === $group['shipping_class']) {
                             $zone_parts = explode(':', $data['zone_code']);
                             
@@ -85,6 +93,11 @@ class Shipping_Calculator {
 
                     if (!empty($shipping_data)) {
                         foreach ($shipping_data as $data) {
+                            // Skip non-prepaid shipping methods
+                            if (!$data['prepaid']) {
+                                continue;
+                            }
+
                             if ($data['class'] === $group['shipping_class'] && $data['zone_code'] === 'IR') {
                                 $method_key = $data['method'];
                                 if (!isset($shipping_methods[$method_key])) {
