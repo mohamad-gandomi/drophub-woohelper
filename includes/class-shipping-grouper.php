@@ -6,16 +6,27 @@ if (!defined('ABSPATH')) {
 }
 
 class Shipping_Grouper {
-    private $meta_key = '_drophub_prepaid_shippings';
+    private $meta_key = '_drophub_shippings';
     
     public function __construct() {
-        // Add template override
+        // Add template overrides
         add_filter('wc_get_template', array($this, 'override_cart_template'), 10, 5);
+        add_filter('woocommerce_locate_template', array($this, 'override_checkout_template'), 10, 3);
     }
 
     public function override_cart_template($template, $template_name, $args, $template_path, $default_path) {
         if ($template_name === 'cart/cart.php') {
             $template = plugin_dir_path(dirname(__FILE__)) . 'templates/cart.php';
+        }
+        return $template;
+    }
+
+    public function override_checkout_template($template, $template_name, $template_path) {
+        if ($template_name === 'checkout/review-order.php') {
+            $custom_template = plugin_dir_path(dirname(__FILE__)) . 'templates/checkout-review-order.php';
+            if (file_exists($custom_template)) {
+                return $custom_template;
+            }
         }
         return $template;
     }

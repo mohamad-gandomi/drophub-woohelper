@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 }
 
 class Shipping_Display {
-    private $meta_key = '_drophub_prepaid_shippings';
+    private $meta_key = '_drophub_shippings';
     
     public function __construct() {
         add_filter('woocommerce_cart_item_name', array($this, 'add_shipping_info_to_cart_item'), 10, 3);

@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 }
 
 class Shipping_Admin {
-    private $meta_key = '_drophub_prepaid_shippings';
+    private $meta_key = '_drophub_shippings';
 
     public function __construct() {
         // Add read-only display in admin product page
@@ -40,6 +40,7 @@ class Shipping_Admin {
             echo '<table class="widefat" style="border: none;">';
             echo '<tr><td style="width: 150px;"><strong>' . esc_html__('Method:', 'drophub-woohelper') . '</strong></td><td>' . esc_html($data['method']) . '</td></tr>';
             echo '<tr><td><strong>' . esc_html__('Zone Code:', 'drophub-woohelper') . '</strong></td><td>' . esc_html($data['zone_code']) . '</td></tr>';
+            echo '<tr><td><strong>' . esc_html__('Prepaid:', 'drophub-woohelper') . '</strong></td><td>' . ($data['prepaid'] ? esc_html__('Yes', 'drophub-woohelper') : esc_html__('No', 'drophub-woohelper')) . '</td></tr>';
             echo '<tr><td><strong>' . esc_html__('Base Rate:', 'drophub-woohelper') . '</strong></td><td>' . wc_price($data['rate']) . '</td></tr>';
             echo '<tr><td><strong>' . esc_html__('Extra Item Rate:', 'drophub-woohelper') . '</strong></td><td>' . wc_price($data['extra_item_rate']) . '</td></tr>';
             echo '<tr><td><strong>' . esc_html__('Delivery Time:', 'drophub-woohelper') . '</strong></td><td>' . 

@@ -43,7 +43,7 @@ do_action('woocommerce_before_cart'); ?>
                                     // First pass: Try to assign items to state-specific shipping methods
                                     foreach ($group['items'] as $cart_item_key => $cart_item) {
                                         $product_id = $cart_item['product_id'];
-                                        $shipping_data = get_post_meta($product_id, '_drophub_prepaid_shippings', true);
+                                        $shipping_data = get_post_meta($product_id, '_drophub_shippings', true);
                                         $shipping_data = maybe_unserialize($shipping_data);
 
                                         if (!empty($shipping_data)) {
@@ -61,6 +61,7 @@ do_action('woocommerce_before_cart'); ?>
                                                                 'zone' => $zone_parts[1],
                                                                 'rate' => floatval($data['rate']),
                                                                 'extra_rate' => floatval($data['extra_item_rate']),
+                                                                'prepaid' => $data['prepaid'],
                                                                 'delivery_time' => sprintf(
                                                                     __('%d-%d days', 'drophub-woohelper'),
                                                                     absint($data['range']['min']),
@@ -85,7 +86,7 @@ do_action('woocommerce_before_cart'); ?>
                                     foreach ($group['items'] as $cart_item_key => $cart_item) {
                                         if (!isset($processed_items[$cart_item_key])) {
                                             $product_id = $cart_item['product_id'];
-                                            $shipping_data = get_post_meta($product_id, '_drophub_prepaid_shippings', true);
+                                            $shipping_data = get_post_meta($product_id, '_drophub_shippings', true);
                                             $shipping_data = maybe_unserialize($shipping_data);
 
                                             if (!empty($shipping_data)) {
@@ -98,6 +99,7 @@ do_action('woocommerce_before_cart'); ?>
                                                                 'zone' => 'IR',
                                                                 'rate' => floatval($data['rate']),
                                                                 'extra_rate' => floatval($data['extra_item_rate']),
+                                                                'prepaid' => $data['prepaid'],
                                                                 'delivery_time' => sprintf(
                                                                     __('%d-%d days', 'drophub-woohelper'),
                                                                     absint($data['range']['min']),
@@ -138,6 +140,9 @@ do_action('woocommerce_before_cart'); ?>
                                                 echo '<span class="shipping-zone">' . sprintf(__('Zone: %s', 'drophub-woohelper'), esc_html($method['zone'])) . '</span>';
                                             }
                                             echo '<span class="delivery-time">' . sprintf(__('Delivery Time: %s', 'drophub-woohelper'), esc_html($method['delivery_time'])) . '</span>';
+                                            echo '<span class="prepaid-status ' . ($method['prepaid'] ? 'prepaid' : 'not-prepaid') . '">' . 
+                                                esc_html($method['prepaid'] ? __('Prepaid', 'drophub-woohelper') : __('Not Prepaid', 'drophub-woohelper')) . 
+                                            '</span>';
                                             
                                             // List products using this shipping method
                                             echo '<div class="method-products">';

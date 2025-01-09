@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 }
 
 class Shipping_Calculator {
-    private $meta_key = '_drophub_prepaid_shippings';
+    private $meta_key = '_drophub_shippings';
     private $display;
     private $grouper;
     private $admin;

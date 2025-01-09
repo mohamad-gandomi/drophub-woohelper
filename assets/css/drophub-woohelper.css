@@ -209,3 +209,130 @@
     color: #999;
     white-space: nowrap;
 }
+
+/* Checkout review order shipping groups */
+.woocommerce-checkout-review-order-table .shipping-group-header td {
+    background-color: #f8f8f8;
+    padding: 10px 15px;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.woocommerce-checkout-review-order-table .shipping-group-header strong {
+    color: #333;
+    font-size: 1.1em;
+}
+
+.woocommerce-checkout-review-order-table .cart_item {
+    background-color: #fff;
+}
+
+/* Checkout Review Order Groups */
+.checkout-review-groups {
+    margin-bottom: 30px;
+}
+
+.checkout-shipping-group {
+    margin-bottom: 20px;
+    border: 2px solid #e5e5e5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.checkout-shipping-group .shipping-group-header {
+    background: #f8f8f8;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.checkout-shipping-group .shipping-group-header strong {
+    display: block;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.checkout-shipping-group .shipping-info {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.checkout-shipping-group .shipping-info .delivery-time,
+.checkout-shipping-group .shipping-info .shipping-zone {
+    display: inline-block;
+    margin-right: 15px;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.checkout-shipping-group .shipping-info .delivery-time {
+    background: #e7f5e7;
+    color: #28a745;
+}
+
+.checkout-shipping-group .shipping-info .shipping-zone {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.checkout-shipping-group .group-products {
+    margin: 0 !important;
+    border: none !important;
+}
+
+.checkout-shipping-group .group-products td {
+    padding: 15px;
+    background: #fff;
+    border-top: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.checkout-shipping-group .group-products tr:last-child td {
+    border-bottom: none;
+}
+
+.checkout-shipping-group .product-name {
+    width: 70%;
+}
+
+.checkout-shipping-group .product-total {
+    text-align: right;
+}
+
+/* Responsive styles for checkout groups */
+@media screen and (max-width: 768px) {
+    .checkout-shipping-group {
+        margin: 15px 0;
+    }
+    
+    .checkout-shipping-group .shipping-group-header {
+        padding: 12px;
+    }
+    
+    .checkout-shipping-group .group-products td {
+        padding: 12px;
+    }
+    
+    .checkout-shipping-group .shipping-info span {
+        display: block;
+        margin: 5px 0;
+    }
+}
+
+.shipping-cost-info .prepaid-status {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.shipping-cost-info .prepaid-status.prepaid {
+    background: #e7f5e7;
+    color: #28a745;
+}
+
+.shipping-cost-info .prepaid-status.not-prepaid {
+    background: #fff3cd;
+    color: #856404;
+}
