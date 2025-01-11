@@ -77,13 +77,14 @@ do_action('woocommerce_before_cart'); ?>
                                                         // wc_price(($total_quantity - 1) * $group['extra_rate'])
                                                     // ); ?>
                                                     </span> -->
+                                                <?php endif; ?>
                                                     <span class="total-cost">
                                                         <?php
                                                         $total_cost = $group['rate'] + (($total_quantity - 1) * $group['extra_rate']);
                                                         echo sprintf(__('Total Shipping: %s', 'drophub-woohelper'), wc_price($total_cost));
                                                         ?>
                                                     </span>
-                                                <?php endif; ?>
+  
                                             </div>
                                         <?php endif; ?>
                                     </div>
