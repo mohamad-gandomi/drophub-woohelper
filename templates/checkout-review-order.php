@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 			<tr class="shipping-group-header">
 				<td colspan="2">
 					<div class="shipping-details">
-						<strong><?php echo esc_html($group['shipping_class']); ?></strong>
+						<!-- <strong><?php //echo esc_html($group['shipping_class']); ?></strong> -->
 						<span class="shipping-method"><?php echo esc_html($group['shipping_method']); ?></span>
 						<?php if (isset($group['delivery_time'])): ?>
 							<span class="delivery-time">
@@ -55,7 +55,7 @@ defined( 'ABSPATH' ) || exit;
 						<?php if (isset($group['prepaid'])): ?>
 							<span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
 								<?php echo $group['prepaid'] ? 
-									esc_html__('Prepaid Shipping', 'drophub-woohelper') : 
+									'' : 
 									esc_html__('Cash on Delivery', 'drophub-woohelper'); ?>
 							</span>
 						<?php endif; ?>
