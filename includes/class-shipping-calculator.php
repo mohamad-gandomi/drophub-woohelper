@@ -19,6 +19,7 @@ class Shipping_Calculator {
         
         // Add shipping cost calculation
         add_action('woocommerce_cart_calculate_fees', array($this, 'calculate_shipping_costs'));
+        add_filter('woocommerce_package_rates', array($this, 'filter_shipping_methods'), 10, 2);
     }
 
     public function calculate_shipping_costs($cart) {
@@ -38,6 +39,16 @@ class Shipping_Calculator {
         $grouper = new Shipping_Grouper();
         $grouped_items = $grouper->group_cart_items();
         $customer_state = WC()->customer ? WC()->customer->get_shipping_state() : '';
+
+        $has_standard_product = false;
+
+        foreach ($grouped_items as $group) {
+            // Check for standard products
+            if ($group['shipping_class'] === __('Standard Shipping', 'drophub-woohelper')) {
+                $has_standard_product = true;
+                break;
+            }
+        }
 
         foreach ($grouped_items as $group) {
             // Skip empty groups, standard shipping, or non-prepaid groups
@@ -130,4 +141,36 @@ class Shipping_Calculator {
             $cart->add_fee(__('Shipping Cost', 'drophub-woohelper'), $total_shipping);
         }
     }
-} 
+
+    public function filter_shipping_methods($rates, $package) {
+        $grouper = new Shipping_Grouper();
+        $grouped_items = $grouper->group_cart_items();
+
+        $has_standard_product = false;
+
+        foreach ($grouped_items as $group) {
+            // Check for standard products
+            if ($group['shipping_class'] === __('Standard Shipping', 'drophub-woohelper')) {
+                $has_standard_product = true;
+                break;
+            }
+        }
+
+        if (!$has_standard_product) {
+            // Remove all existing shipping methods
+            $rates = array();
+
+            // Add a fallback shipping method to avoid checkout errors
+            $fallback_rate = new \WC_Shipping_Rate(
+                'fallback_shipping',
+                __('Fallback Shipping', 'drophub-woohelper'),
+                0,
+                array(),
+                'fallback'
+            );
+            $rates['fallback_shipping'] = $fallback_rate;
+        }
+
+        return $rates;
+    }
+}
