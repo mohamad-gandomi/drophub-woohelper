@@ -447,6 +447,7 @@
 .woocommerce-checkout-review-order-table .shipping-group-header .prepaid-status.prepaid {
     background: #e7f5e7;
     color: #28a745;
+    display: none;
 }
 
 .woocommerce-checkout-review-order-table .shipping-group-header .prepaid-status.not-prepaid {

@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: DropHub WooHelper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-29 12:52+0000\n"
-"PO-Revision-Date: 2024-12-29 13:53+0000\n"
-"Last-Translator: mg-shop\n"
+"PO-Revision-Date: 2025-01-13 08:47+0000\n"
+"Last-Translator: Arch The Body\n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -15,9 +15,35 @@ msgstr ""
 "X-Loco-Version: 2.6.14; wp-6.7.1\n"
 "X-Domain: drophub-woohelper"
 
-#: includes/class-shipping-calculator.php:76
+#: includes/class-shipping-display.php:83
+#: includes/class-shipping-display.php:96
+#: includes/class-shipping-display.php:115 includes/class-shipping-admin.php:48
+msgid "%d-%d days"
+msgstr ""
+
+#: includes/class-shipping-admin.php:44
+msgid "Base Rate:"
+msgstr ""
+
+#: templates/checkout-thankyou.php:85 templates/checkout-review-order.php:59
+msgid "Cash on Delivery"
+msgstr "پرداخت در زمان تحویل"
+
+#: includes/class-shipping-admin.php:52
 msgid "Class ID:"
 msgstr ""
+
+#: includes/class-shipping-admin.php:46
+msgid "Delivery Time:"
+msgstr ""
+
+#: templates/cart.php:39
+msgid "Delivery Time: %d-%d days"
+msgstr "زمان تحویل: %d تا %d روز"
+
+#: templates/checkout-thankyou.php:75 templates/checkout-review-order.php:49
+msgid "Delivery: %d-%d days"
+msgstr "تحویل: %d تا %d روز"
 
 #. Name of the plugin
 msgid "DropHub WooHelper"
@@ -29,29 +55,26 @@ msgid ""
 "delivery time calculations."
 msgstr ""
 
-#: includes/class-shipping-calculator.php:49
-msgid "Enter estimated shipping time range in days"
-msgstr ""
-
 #: includes/class-location-validator.php:79
 msgid "Enter excluded locations (one per line)"
 msgstr ""
 
-#. %1$d: minimum days, %2$d: maximum days
-#: includes/class-shipping-calculator.php:173
-#, php-format
-#| msgid "Estimated shipping: %d-%d days"
-msgid "Estimated shipping: %1$d-%2$d days"
-msgstr "زمان تقریبی ارسال: %1$d-%2$d روز"
-
-#. %d: number of days
-#: includes/class-shipping-calculator.php:163
-msgid "Estimated shipping: %d days"
-msgstr "زمان تقریبی ارسال: %d روز"
+#: includes/class-shipping-display.php:31
+#: includes/class-shipping-display.php:55
+msgid "Estimated Delivery"
+msgstr ""
 
 #: includes/class-location-validator.php:65
 msgid "Excluded Locations"
 msgstr ""
+
+#: includes/class-shipping-admin.php:45
+msgid "Extra Item Rate:"
+msgstr ""
+
+#: includes/class-shipping-calculator.php:166
+msgid "Fallback Shipping"
+msgstr "ارسال جایگزین"
 
 #. Author URI of the plugin
 msgid "https://your-website.com"
@@ -61,24 +84,65 @@ msgstr ""
 msgid "https://your-website.com/drophub-woohelper"
 msgstr ""
 
-#: includes/class-shipping-calculator.php:64
-msgid "Maximum Days:"
-msgstr ""
-
-#: includes/class-shipping-calculator.php:52
-msgid "Minimum Days:"
+#: includes/class-shipping-admin.php:41
+msgid "Method:"
 msgstr ""
 
 #. Author of the plugin
 msgid "Mohamad Gandomi"
 msgstr ""
 
+#: includes/class-shipping-admin.php:43
+msgid "No"
+msgstr ""
+
+#: includes/class-shipping-admin.php:32
+msgid "No shipping information available."
+msgstr ""
+
+#: templates/cart.php:49
+msgid "Pay Upon Delivery"
+msgstr ""
+"پرداخت در زمان تحویل\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#: templates/checkout-thankyou.php:84
+msgid "Prepaid Shipping"
+msgstr ""
+
+#: includes/class-shipping-admin.php:43
+msgid "Prepaid:"
+msgstr ""
+
 #: includes/class-return-policy.php:23 includes/class-return-policy.php:73
 msgid "Return Policy"
 msgstr "قوانین بازگشت"
 
-#: includes/class-shipping-calculator.php:24
-msgid "Shipping Time Range"
+#: includes/class-shipping-calculator.php:141
+msgid "Shipping Cost"
+msgstr "هزینه ارسال"
+
+#: templates/checkout-thankyou.php:100 templates/checkout-review-order.php:74
+#, php-format
+msgid "Shipping Cost: %s"
+msgstr "هزینه ارسال: %s"
+
+#: includes/class-shipping-admin.php:19
+msgid "Shipping Information"
+msgstr ""
+
+#: includes/class-shipping-display.php:25
+#: includes/class-shipping-display.php:49
+msgid "Shipping Method"
+msgstr ""
+
+#: includes/class-shipping-admin.php:39
+msgid "Shipping Option %d"
 msgstr ""
 
 #: includes/class-location-validator.php:131
@@ -86,8 +150,31 @@ msgstr ""
 msgid "Sorry, %s cannot be shipped to %s"
 msgstr "متأسفیم، ارسال %s به %s امکان‌پذیر نیست."
 
+#: includes/class-shipping-calculator.php:47
+#: includes/class-shipping-calculator.php:56
+#: includes/class-shipping-calculator.php:153
+#: includes/class-shipping-grouper.php:118
+#: includes/class-shipping-grouper.php:119
+#: includes/class-shipping-grouper.php:208
+#: includes/class-shipping-grouper.php:209 templates/cart.php:27
+msgid "Standard Shipping"
+msgstr ""
+
+#: templates/cart.php:74
+#, php-format
+msgid "Total Shipping: %s"
+msgstr "هزینه حمل و نقل: %s"
+
 #: drophub-woohelper.php:41
 msgid ""
 "WooCommerce is not active. Please activate WooCommerce to use the DropHub "
 "WooHelper plugin."
+msgstr ""
+
+#: includes/class-shipping-admin.php:43
+msgid "Yes"
+msgstr ""
+
+#: includes/class-shipping-admin.php:42
+msgid "Zone Code:"
 msgstr ""
