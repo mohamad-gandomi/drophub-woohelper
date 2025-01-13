@@ -10,6 +10,7 @@ class DropHub_WooHelper {
     private $location_validator;
     private $delivery_calculator;
     private $admin;
+    private $settings;
 
     public function init() {
         // Load dependencies
@@ -19,6 +20,7 @@ class DropHub_WooHelper {
         $this->return_policy = new Return_Policy();
         $this->location_validator = new Location_Validator();
         $this->delivery_calculator = new Shipping_Calculator();
+        $this->settings = new Settings();
         // $this->admin = new Admin();
 
         // Register hooks
@@ -75,4 +77,4 @@ class DropHub_WooHelper {
         // Activation tasks if needed
         flush_rewrite_rules();
     }
-} 
+}
