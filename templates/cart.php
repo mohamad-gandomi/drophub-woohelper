@@ -42,7 +42,8 @@ do_action('woocommerce_before_cart'); ?>
                                                 ); ?>
                                             </span>
                                         <?php endif; ?>
-
+                                        
+                                        <?php if (get_option('drophub_ignore_shipping', 'no') === 'no'): ?>
                                         <span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
                                             <?php 
                                             if (!$group['prepaid']) {
@@ -50,8 +51,9 @@ do_action('woocommerce_before_cart'); ?>
                                             }
                                             ?>
                                         </span>
+                                        <?php endif; ?>
 
-                                        <?php if ($group['prepaid'] && isset($group['rate'])): ?>
+                                        <?php if (get_option('drophub_ignore_shipping', 'no') === 'no' && $group['prepaid'] && isset($group['rate'])): ?>
                                             <div class="shipping-rates">
                                                 <!-- <span class="base-rate">
                                                     <?php //echo sprintf(__('Base Rate: %s', 'drophub-woohelper'), wc_price($group['rate'])); ?>

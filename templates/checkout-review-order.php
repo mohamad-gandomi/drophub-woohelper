@@ -52,14 +52,14 @@ defined( 'ABSPATH' ) || exit;
 								); ?>
 							</span>
 						<?php endif; ?>
-						<?php if (isset($group['prepaid'])): ?>
+						<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['prepaid'])): ?>
 							<span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
 								<?php echo $group['prepaid'] ? 
 									'' : 
 									esc_html__('Cash on Delivery', 'drophub-woohelper'); ?>
 							</span>
 						<?php endif; ?>
-						<?php if (isset($group['rate'])): ?>
+						<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['rate'])): ?>
 							<span class="shipping-rates">
 								<?php 
 								$total_items = 0;

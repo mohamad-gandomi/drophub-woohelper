@@ -67,7 +67,7 @@ $order = wc_get_order( $order_id );
 			// Add shipping group header
 			?>
 			<h2 class="shipping-group-header">
-				<?php echo esc_html($group['shipping_class']); ?>
+				<?php //echo esc_html($group['shipping_class']); ?>
 				<span class="shipping-method"><?php echo esc_html($group['shipping_method']); ?></span>
 				<?php if (isset($group['delivery_time'])): ?>
 					<span class="delivery-time">
@@ -78,14 +78,14 @@ $order = wc_get_order( $order_id );
 						); ?>
 					</span>
 				<?php endif; ?>
-				<?php if (isset($group['prepaid'])): ?>
+				<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['prepaid'])): ?>
 					<span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
 						<?php echo $group['prepaid'] ? 
 							esc_html__('Prepaid Shipping', 'drophub-woohelper') : 
 							esc_html__('Cash on Delivery', 'drophub-woohelper'); ?>
 					</span>
 				<?php endif; ?>
-				<?php if (isset($group['rate'])): ?>
+				<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['rate'])): ?>
 					<span class="shipping-rates">
 						<?php 
 						$total_items = 0;
@@ -138,8 +138,6 @@ $order = wc_get_order( $order_id );
 		}
 		?>
 
-		<?php do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() ); ?>
-		<?php do_action( 'woocommerce_thankyou', $order->get_id() ); ?>
 	<?php else : ?>
 		<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received"><?php esc_html_e( 'Thank you. Your order has been received.', 'woocommerce' ); ?></p>
 	<?php endif; ?>
