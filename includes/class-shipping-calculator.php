@@ -17,9 +17,11 @@ class Shipping_Calculator {
         $this->grouper = new Shipping_Grouper();
         $this->admin = new Shipping_Admin();
         
-        // Add shipping cost calculation
-        add_action('woocommerce_cart_calculate_fees', array($this, 'calculate_shipping_costs'));
-        add_filter('woocommerce_package_rates', array($this, 'filter_shipping_methods'), 10, 2);
+        // Add shipping cost calculation only if not ignored
+        if (get_option('drophub_ignore_shipping', 'no') === 'no') {
+            add_action('woocommerce_cart_calculate_fees', array($this, 'calculate_shipping_costs'));
+            add_filter('woocommerce_package_rates', array($this, 'filter_shipping_methods'), 10, 2);
+        }
     }
 
     public function calculate_shipping_costs($cart) {
