@@ -21,6 +21,8 @@ class Shipping_Calculator {
         if (get_option('drophub_ignore_shipping', 'no') === 'no') {
             add_action('woocommerce_cart_calculate_fees', array($this, 'calculate_shipping_costs'));
             add_filter('woocommerce_package_rates', array($this, 'filter_shipping_methods'), 10, 2);
+            add_filter('woocommerce_cart_totals_fee_html', array($this, 'add_dynamic_class_to_fee_td') , 10, 2);
+            add_action('wp_head', array($this, 'add_styles'));
         }
     }
 
@@ -138,6 +140,22 @@ class Shipping_Calculator {
             }
         }
 
+        // Add the selected WooCommerce shipping method's rate
+        $chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+        if (!empty($chosen_shipping_methods)) {
+            $chosen_method = $chosen_shipping_methods[0]; // Assuming one shipping method is selected
+            $packages = WC()->shipping->get_packages();
+            
+            foreach ($packages as $package) {
+                if (isset($package['rates'][$chosen_method])) {
+                    $rate = $package['rates'][$chosen_method]->cost;
+                    $total_shipping += floatval($rate); // Add the WooCommerce shipping method cost
+                    $cart->add_fee(__('Hidden Shipping Cost', 'drophub-woohelper'), -floatval($rate));
+                    break;
+                }
+            }
+        }
+
         // Add the total shipping fee
         if ($total_shipping > 0) {
             $cart->add_fee(__('Shipping Cost', 'drophub-woohelper'), $total_shipping);
@@ -175,4 +193,22 @@ class Shipping_Calculator {
 
         return $rates;
     }
+
+    public function add_dynamic_class_to_fee_td($fee_html, $fee) {
+        // Create a class name based on the fee name
+        $class = sanitize_title($fee->name); // Convert the fee name into a safe CSS class
+        return '<span class="' . esc_attr($class) . '">' . $fee_html . '</span>';
+    }
+
+    public function add_styles() {
+
+         echo '<style type="text/css">
+        .woocommerce-shipping-methods,
+        .woocommerce-checkout .woocommerce-shipping-totals {
+            display: none;
+        }
+        </style>';
+    }
+
+
 }

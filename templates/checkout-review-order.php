@@ -42,40 +42,66 @@ defined( 'ABSPATH' ) || exit;
 				<td colspan="2">
 					<div class="shipping-details">
 						<!-- <strong><?php //echo esc_html($group['shipping_class']); ?></strong> -->
-						<span class="shipping-method"><?php echo esc_html($group['shipping_method']); ?></span>
-						<?php if (isset($group['delivery_time'])): ?>
-							<span class="delivery-time">
-								<?php printf(
-									esc_html__('Delivery: %d-%d days', 'drophub-woohelper'),
-									$group['delivery_time']['min'],
-									$group['delivery_time']['max']
-								); ?>
-							</span>
-						<?php endif; ?>
-						<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['prepaid'])): ?>
-							<span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
-								<?php echo $group['prepaid'] ? 
-									'' : 
-									esc_html__('Cash on Delivery', 'drophub-woohelper'); ?>
-							</span>
-						<?php endif; ?>
-						<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['rate'])): ?>
-							<span class="shipping-rates">
-								<?php 
-								$total_items = 0;
-								foreach ($group['items'] as $item) {
-									$total_items += $item['quantity'];
+						<?php if (isset($group['shipping_method']) && $group['shipping_method'] == __('Standard Shipping', 'drophub-woohelper') && get_option('drophub_ignore_shipping', 'no') === 'no'): ?>
+						<?php
+						$packages = WC()->shipping->get_packages();
+
+						foreach ($packages as $i => $package) {
+							$available_methods = $package['rates'];
+							$chosen_method = WC()->session->get('chosen_shipping_methods')[$i] ?? '';
+
+							if (!empty($available_methods)) {
+								echo '<div class="shipping-method-selection">';
+								echo '<label for="shipping_method_' . esc_attr($i) . '">' . esc_html__('Select Shipping Method:', 'woocommerce') . '</label>';
+								echo '<select name="shipping_method[' . esc_attr($i) . ']" id="shipping_method_' . esc_attr($i) . '" class="shipping-method-dropdown">';
+								foreach ($available_methods as $method_id => $method) {
+									echo '<option value="' . esc_attr($method_id) . '" ' . selected($chosen_method, $method_id, false) . '>';
+									echo esc_html($method->get_label()) . ' - ' . wc_price($method->get_cost());
+									echo '</option>';
 								}
-								$shipping_cost = $group['rate'];
-								if ($total_items > 1 && isset($group['extra_rate'])) {
-									$shipping_cost += ($total_items - 1) * $group['extra_rate'];
-								}
-								printf(
-									esc_html__('Shipping Cost: %s', 'drophub-woohelper'),
-									wc_price($shipping_cost)
-								);
-								?>
-							</span>
+								echo '</select>';
+								echo '</div>';
+							} else {
+								echo '<p>' . esc_html__('No shipping methods available for this package.', 'woocommerce') . '</p>';
+							}
+						}
+						?>
+						<?php else: ?>
+							<span class="shipping-method"><?php echo esc_html($group['shipping_method']); ?></span>
+							<?php if (isset($group['delivery_time'])): ?>
+								<span class="delivery-time">
+									<?php printf(
+										esc_html__('Delivery: %d-%d days', 'drophub-woohelper'),
+										$group['delivery_time']['min'],
+										$group['delivery_time']['max']
+									); ?>
+								</span>
+							<?php endif; ?>
+							<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['prepaid'])): ?>
+								<span class="prepaid-status <?php echo $group['prepaid'] ? 'prepaid' : 'not-prepaid'; ?>">
+									<?php echo $group['prepaid'] ? 
+										'' : 
+										esc_html__('Cash on Delivery', 'drophub-woohelper'); ?>
+								</span>
+							<?php endif; ?>
+							<?php if ( get_option('drophub_ignore_shipping', 'no') === 'no' && isset($group['rate'])): ?>
+								<span class="shipping-rates">
+									<?php 
+									$total_items = 0;
+									foreach ($group['items'] as $item) {
+										$total_items += $item['quantity'];
+									}
+									$shipping_cost = $group['rate'];
+									if ($total_items > 1 && isset($group['extra_rate'])) {
+										$shipping_cost += ($total_items - 1) * $group['extra_rate'];
+									}
+									printf(
+										esc_html__('Shipping Cost: %s', 'drophub-woohelper'),
+										wc_price($shipping_cost)
+									);
+									?>
+								</span>
+							<?php endif; ?>
 						<?php endif; ?>
 					</div>
 				</td>

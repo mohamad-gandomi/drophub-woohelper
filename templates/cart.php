@@ -81,18 +81,44 @@ do_action('woocommerce_before_cart'); ?>
                                         <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
+
+                                <?php if (isset($group['shipping_method']) && $group['shipping_method'] == __('Standard Shipping', 'drophub-woohelper') && get_option('drophub_ignore_shipping', 'no') === 'no'): ?>
+                                <?php
+                                $packages = WC()->shipping->get_packages();
+
+                                foreach ($packages as $i => $package) {
+                                    $available_methods = $package['rates'];
+                                    $chosen_method = WC()->session->get('chosen_shipping_methods')[$i] ?? '';
+
+                                    if (!empty($available_methods)) {
+                                        echo '<div class="shipping-method-selection">';
+                                        echo '<label for="shipping_method_' . esc_attr($i) . '">' . esc_html__('Select Shipping Method:', 'woocommerce') . '</label>';
+                                        echo '<select name="shipping_method[' . esc_attr($i) . ']" id="shipping_method_' . esc_attr($i) . '" class="shipping-method-dropdown">';
+                                        foreach ($available_methods as $method_id => $method) {
+                                            echo '<option value="' . esc_attr($method_id) . '" ' . selected($chosen_method, $method_id, false) . '>';
+                                            echo esc_html($method->get_label()) . ' - ' . wc_price($method->get_cost());
+                                            echo '</option>';
+                                        }
+                                        echo '</select>';
+                                        echo '</div>';
+                                    } else {
+                                        echo '<p>' . esc_html__('No shipping methods available for this package.', 'woocommerce') . '</p>';
+                                    }
+                                }
+                                ?>
+                                <?php endif; ?>
                             </div>
                             <table class="shop_table shop_table_responsive">
-                                        <thead>
-            <tr>
-                <th class="product-remove"><span class="screen-reader-text"><?php esc_html_e('Remove item', 'woocommerce'); ?></span></th>
-                <th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail', 'woocommerce'); ?></span></th>
-                <th class="product-name"><?php esc_html_e('Product', 'woocommerce'); ?></th>
-                <th class="product-price"><?php esc_html_e('Price', 'woocommerce'); ?></th>
-                <th class="product-quantity"><?php esc_html_e('Quantity', 'woocommerce'); ?></th>
-                <th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
-            </tr>
-        </thead>
+                                <thead>
+                                    <tr>
+                                        <th class="product-remove"><span class="screen-reader-text"><?php esc_html_e('Remove item', 'woocommerce'); ?></span></th>
+                                        <th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail', 'woocommerce'); ?></span></th>
+                                        <th class="product-name"><?php esc_html_e('Product', 'woocommerce'); ?></th>
+                                        <th class="product-price"><?php esc_html_e('Price', 'woocommerce'); ?></th>
+                                        <th class="product-quantity"><?php esc_html_e('Quantity', 'woocommerce'); ?></th>
+                                        <th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                 <?php
                                 foreach ($group['items'] as $cart_item_key => $cart_item) :
