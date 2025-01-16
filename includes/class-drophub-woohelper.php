@@ -11,6 +11,8 @@ class DropHub_WooHelper {
     private $delivery_calculator;
     private $admin;
     private $settings;
+    private $product_meta_manager;
+    private $external_image_handler;
 
     public function init() {
         // Load dependencies
@@ -21,6 +23,8 @@ class DropHub_WooHelper {
         $this->location_validator = new Location_Validator();
         $this->delivery_calculator = new Shipping_Calculator();
         $this->settings = new Settings();
+        $this->product_meta_manager = new Product_Meta_Manager();
+        $this->external_image_handler = new External_Image_Handler();
         // $this->admin = new Admin();
 
         // Register hooks
